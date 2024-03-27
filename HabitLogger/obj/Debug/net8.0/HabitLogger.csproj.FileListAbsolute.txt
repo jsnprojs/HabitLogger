@@ -38,3 +38,4 @@ C:\Users\J\Desktop\VSProjects\HabitLogger\HabitLogger\obj\Debug\net8.0\refint\Ha
 C:\Users\J\Desktop\VSProjects\HabitLogger\HabitLogger\obj\Debug\net8.0\HabitLogger.pdb
 C:\Users\J\Desktop\VSProjects\HabitLogger\HabitLogger\obj\Debug\net8.0\HabitLogger.genruntimeconfig.cache
 C:\Users\J\Desktop\VSProjects\HabitLogger\HabitLogger\obj\Debug\net8.0\ref\HabitLogger.dll
+C:\Users\J\Desktop\VSProjects\HabitLogger\HabitLogger\obj\Debug\net8.0\HabitLogger.sourcelink.json
