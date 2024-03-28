@@ -1,13 +1,11 @@
-﻿using Microsoft.Data.Sqlite;
-using System.Globalization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using System.Globalization;
+using Microsoft.Data.Sqlite;
 
-namespace HabitLogger;
+namespace habit_tracker;
 
-internal class Program
+class Program
 {
     static string connectionString = @"Data Source=habit-Tracker.db";
-
     static void Main(string[] args)
     {
         using (var connection = new SqliteConnection(connectionString))
@@ -26,7 +24,9 @@ internal class Program
             tableCmd.ExecuteNonQuery();
 
             connection.Close();
+
         }
+
         GetUserInput();
     }
 
@@ -72,69 +72,6 @@ internal class Program
             }
         }
 
-    }
-
-    internal static void Update()
-    {
-        GetAllRecords();
-
-        var recordId = GetNumberInput("\n\nPlease type Id of the record would like to update. Type 0 to return to main manu.\n\n");
-
-        using (var connection = new SqliteConnection(connectionString))
-        {
-            connection.Open();
-
-            var checkCmd = connection.CreateCommand();
-            checkCmd.CommandText = $"SELECT EXISTS(SELECT 1 FROM drinking_water WHERE Id = {recordId})";
-            int checkQuery = Convert.ToInt32(checkCmd.ExecuteScalar());
-
-            if (checkQuery == 0)
-            {
-                Console.WriteLine($"\n\nRecord with Id {recordId} doesn't exist.\n\n");
-                connection.Close();
-                Update();
-            }
-
-            string date = GetDateInput();
-
-            int quantity = GetNumberInput("\n\nPlease insert number of glasses or other measure of your choice (no decimals allowed)\n\n");
-
-            var tableCmd = connection.CreateCommand();
-            tableCmd.CommandText = $"UPDATE drinking_water SET date = '{date}', quantity = {quantity} WHERE Id = {recordId}";
-            tableCmd.ExecuteNonQuery();
-
-            connection.Close();
-        }
-    }
-
-
-    private static void Delete()
-    {
-        Console.Clear();
-        GetAllRecords();
-
-        var recordId = GetNumberInput("\n\nPlease type the Id of the record you want to delete or type 0 to go back to Main Menu\n\n");
-
-        using (var connection = new SqliteConnection(connectionString))
-        {
-            connection.Open();
-            var tableCmd = connection.CreateCommand();
-
-            tableCmd.CommandText = $"DELETE from drinking_water WHERE Id = '{recordId}'";
-
-            int rowCount = tableCmd.ExecuteNonQuery();
-
-            if (rowCount == 0)
-            {
-                Console.WriteLine($"\n\nRecord with Id {recordId} doesn't exist. \n\n");
-                Delete();
-            }
-
-        }
-
-        Console.WriteLine($"\n\nRecord with Id {recordId} was deleted. \n\n");
-
-        GetUserInput();
     }
 
     private static void GetAllRecords()
@@ -197,6 +134,70 @@ internal class Program
 
             connection.Close();
         }
+    }
+
+    private static void Delete()
+    {
+        Console.Clear();
+        GetAllRecords();
+
+        var recordId = GetNumberInput("\n\nPlease type the Id of the record you want to delete or type 0 to go back to Main Menu\n\n");
+
+        using (var connection = new SqliteConnection(connectionString))
+        {
+            connection.Open();
+            var tableCmd = connection.CreateCommand();
+
+            tableCmd.CommandText = $"DELETE from drinking_water WHERE Id = '{recordId}'";
+
+            int rowCount = tableCmd.ExecuteNonQuery();
+
+            if (rowCount == 0)
+            {
+                Console.WriteLine($"\n\nRecord with Id {recordId} doesn't exist. \n\n");
+                Delete();
+            }
+
+        }
+
+        Console.WriteLine($"\n\nRecord with Id {recordId} was deleted. \n\n");
+
+        GetUserInput();
+    }
+
+    internal static void Update()
+    {
+        GetAllRecords();
+
+        var recordId = GetNumberInput("\n\nPlease type Id of the record would like to update. Type 0 to return to main manu.\n\n");
+
+        using (var connection = new SqliteConnection(connectionString))
+        {
+            connection.Open();
+
+            var checkCmd = connection.CreateCommand();
+            checkCmd.CommandText = $"SELECT EXISTS(SELECT 1 FROM drinking_water WHERE Id = {recordId})";
+            int checkQuery = Convert.ToInt32(checkCmd.ExecuteScalar());
+
+            if (checkQuery == 0)
+            {
+                Console.WriteLine($"\n\nRecord with Id {recordId} doesn't exist.\n\n");
+                connection.Close();
+                Update();
+            }
+
+            string date = GetDateInput();
+
+            int quantity = GetNumberInput("\n\nPlease insert number of glasses or other measure of your choice (no decimals allowed)\n\n");
+
+            var tableCmd = connection.CreateCommand();
+            tableCmd.CommandText = $"UPDATE drinking_water SET date = '{date}', quantity = {quantity} WHERE Id = {recordId}";
+
+            tableCmd.ExecuteNonQuery();
+
+            connection.Close();
+        }
+
 
     }
 
@@ -206,7 +207,7 @@ internal class Program
 
         string dateInput = Console.ReadLine();
 
-        if (dateInput == "0") { GetUserInput(); }
+        if (dateInput == "0") GetUserInput();
 
         while (!DateTime.TryParseExact(dateInput, "dd-MM-yy", new CultureInfo("en-US"), DateTimeStyles.None, out _))
         {
@@ -235,11 +236,12 @@ internal class Program
 
         return finalInput;
     }
-
-    public class DrinkingWater
-    {
-        public int Id { get; set; }
-        public DateTime Date { get; set; }
-        public int Quantity { get; set; }
-    }
 }
+
+public class DrinkingWater
+{
+    public int Id { get; set; }
+    public DateTime Date { get; set; }
+    public int Quantity { get; set; }
+}
+
