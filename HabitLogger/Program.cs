@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Numerics;
 using Microsoft.Data.Sqlite;
 
 namespace habit_tracker;
@@ -15,14 +16,24 @@ class Program
             var tableCmd = connection.CreateCommand();
 
             tableCmd.CommandText =
-                @"CREATE TABLE IF NOT EXISTS drinking_water (
+                @"CREATE TABLE IF NOT EXISTS Habits (
                         Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        Date TEXT,
-                        Quantity INTEGER
+                        Type TEXT NOT NULL UNIQUE,
+                        Unit TEXT NOT NULL
                         )";
 
             tableCmd.ExecuteNonQuery();
 
+            tableCmd.CommandText =
+                @"CREATE TABLE IF NOT EXISTS Records (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Date TEXT NOT NULL,
+                        Quantity INTEGER NOT NULL,
+                        Habits_Id INTEGER NOT NULL,
+                        FOREIGN KEY (Habits_Id) REFERENCES Habits(Id)
+                        )";
+
+            tableCmd.ExecuteNonQuery();
             connection.Close();
 
         }
@@ -43,6 +54,7 @@ class Program
             Console.WriteLine("Type 2 to Insert Record.");
             Console.WriteLine("Type 3 to Delete Record.");
             Console.WriteLine("Type 4 to Update Record.");
+            Console.WriteLine("Type 5 to Create a new habit to track.");
             Console.WriteLine("------------------------------------------\n");
 
             string command = Console.ReadLine();
@@ -66,12 +78,79 @@ class Program
                 case "4":
                     Update();
                     break;
+                case "5":
+                    CreateNewTable();
+                    break;
                 default:
                     Console.WriteLine("\nInvalid Command. Please type a number from 0 to 4.\n");
                     break;
             }
         }
 
+    }
+
+    private static void CreateNewTable()
+    {
+        using (var connection = new SqliteConnection(connectionString))
+        {
+            connection.Open();
+            var tableCmd = connection.CreateCommand();
+
+            string habit = GetHabitInput("Please type the habit you want to record or type 0 to go back to the Main Menu\n\n");
+
+            tableCmd.CommandText = $"SELECT COUNT(*) FROM Habits WHERE LOWER(Type) = '{habit.ToLower()}'";
+            int count = Convert.ToInt32(tableCmd.ExecuteScalar());
+
+            while (count > 0)
+            {
+                habit = GetHabitInput("The habit already exists. Enter a new one\n\n");
+                tableCmd.CommandText = $"SELECT COUNT(*) FROM Habits WHERE LOWER(Type) = '{habit.ToLower()}'";
+                count = Convert.ToInt32(tableCmd.ExecuteScalar());
+            }
+
+            string unit = GetUnitInput($"Please type the unit you want to use for {habit} or type 0 to go back to the Main Menu\n\n");
+
+            tableCmd.CommandText = $"INSERT INTO Habits(Type, Unit) VALUES('{habit}', '{unit}')";
+
+            tableCmd.ExecuteNonQuery();
+
+            connection.Close();
+        }
+    }
+
+    private static string GetHabitInput(string message)
+    {
+        Console.WriteLine(message);
+
+        string userInput = Console.ReadLine();
+
+        if (userInput == "0") GetUserInput();
+
+        while (string.IsNullOrEmpty(userInput))
+        {
+            Console.WriteLine("Please type a valid habit name");
+            userInput = Console.ReadLine();
+        }
+
+        return userInput;
+
+    }
+
+    private static string GetUnitInput(string message)
+    {
+        Console.WriteLine(message);
+
+        string userInput = Console.ReadLine();
+
+        if (userInput == "0") GetUserInput();
+
+        while (string.IsNullOrEmpty(userInput))
+        {
+            Console.WriteLine("Please type a valid unit name");
+            userInput = Console.ReadLine();
+        }
+
+        return userInput;
     }
 
     private static void GetAllRecords()

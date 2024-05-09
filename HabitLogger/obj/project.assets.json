@@ -324,24 +324,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\J\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\jason\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\J\\Desktop\\VSProjects\\HabitLogger\\HabitLogger\\HabitLogger.csproj",
+      "projectUniqueName": "C:\\Users\\jason\\Desktop\\VS\\HabitLogger\\HabitLogger\\HabitLogger.csproj",
       "projectName": "HabitLogger",
-      "projectPath": "C:\\Users\\J\\Desktop\\VSProjects\\HabitLogger\\HabitLogger\\HabitLogger.csproj",
-      "packagesPath": "C:\\Users\\J\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\J\\Desktop\\VSProjects\\HabitLogger\\HabitLogger\\obj\\",
+      "projectPath": "C:\\Users\\jason\\Desktop\\VS\\HabitLogger\\HabitLogger\\HabitLogger.csproj",
+      "packagesPath": "C:\\Users\\jason\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\jason\\Desktop\\VS\\HabitLogger\\HabitLogger\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\J\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\jason\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -393,7 +388,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
