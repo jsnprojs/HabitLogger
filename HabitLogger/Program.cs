@@ -293,7 +293,7 @@ $"INSERT INTO Records(Date, Quantity, Habits_Id) VALUES('{date}', {quantity}, {h
 
     internal static void Update()
     {
-        GetAllHabits();
+        GetAllRecords();
 
         var recordId = GetNumberInput("\n\nPlease type Id of the record would like to update. Type 0 to return to main manu.\n\n");
 
@@ -302,7 +302,7 @@ $"INSERT INTO Records(Date, Quantity, Habits_Id) VALUES('{date}', {quantity}, {h
             connection.Open();
 
             var checkCmd = connection.CreateCommand();
-            checkCmd.CommandText = $"SELECT EXISTS(SELECT 1 FROM drinking_water WHERE Id = {recordId})";
+            checkCmd.CommandText = $"SELECT EXISTS(SELECT 1 FROM Records WHERE Id = {recordId})";
             int checkQuery = Convert.ToInt32(checkCmd.ExecuteScalar());
 
             if (checkQuery == 0)
@@ -314,10 +314,10 @@ $"INSERT INTO Records(Date, Quantity, Habits_Id) VALUES('{date}', {quantity}, {h
 
             string date = GetDateInput();
 
-            int quantity = GetNumberInput("\n\nPlease insert number of glasses or other measure of your choice (no decimals allowed)\n\n");
+            int quantity = GetNumberInput("\n\nPlease insert number quantity(no decimals allowed)\n\n");
 
             var tableCmd = connection.CreateCommand();
-            tableCmd.CommandText = $"UPDATE drinking_water SET date = '{date}', quantity = {quantity} WHERE Id = {recordId}";
+            tableCmd.CommandText = $"UPDATE Records SET date = '{date}', quantity = {quantity} WHERE Id = {recordId}";
 
             tableCmd.ExecuteNonQuery();
 
