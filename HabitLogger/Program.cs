@@ -55,6 +55,7 @@ class Program
             Console.WriteLine("Type 3 to Delete Record.");
             Console.WriteLine("Type 4 to Update Record.");
             Console.WriteLine("Type 5 to Create a new habit to track.");
+            Console.WriteLine("Type 6 to View records for specefic Habit.");
             Console.WriteLine("------------------------------------------\n");
 
             string command = Console.ReadLine();
@@ -81,12 +82,62 @@ class Program
                 case "5":
                     CreateNewTable();
                     break;
+                case "6":
+                    ViewHabitRecords();
+                    break;
                 default:
                     Console.WriteLine("\nInvalid Command. Please type a number from 0 to 4.\n");
                     break;
             }
         }
 
+    }
+
+    private static void ViewHabitRecords()
+    {
+        Console.Clear();
+        Console.WriteLine("Current Habits");
+        GetAllHabits();
+
+        using (var connection = new SqliteConnection(connectionString))
+        {
+            connection.Open();
+            var tableCmd = connection.CreateCommand();
+
+            int habitId = GetNumberInput("Enter Id to show habit's records or enter 0 to go back to main menu");
+            tableCmd.CommandText = $"SELECT COUNT(*) FROM Habits WHERE Id = '{habitId}'";
+            int count = Convert.ToInt32(tableCmd.ExecuteScalar());
+
+            while (count == 0)
+            {
+                Console.WriteLine("The Id/Habit does not exist in the current table");
+
+                habitId = GetNumberInput("Please enter the ID of the habit that you want to insert");
+
+                tableCmd.CommandText = $"SELECT COUNT(*) FROM Habits WHERE Id = '{habitId}'";
+                count = Convert.ToInt32(tableCmd.ExecuteScalar());
+
+            }
+
+            tableCmd.CommandText =
+                $"SELECT * FROM Records WHERE Habits_Id = {habitId}";
+
+            SqliteDataReader reader = tableCmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    Console.WriteLine($"Id - {reader.GetInt32(0)} | {reader.GetString(1)} | {reader.GetString(2)}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No rows found");
+            }
+
+            connection.Close();
+        }
     }
 
     private static void CreateNewTable()
@@ -168,8 +219,6 @@ class Program
             tableCmd.CommandText =
                 $"SELECT * FROM Habits";
 
-            List<DrinkingWater> tableData = new();
-
             SqliteDataReader reader = tableCmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -199,8 +248,6 @@ class Program
             var tableCmd = connection.CreateCommand();
             tableCmd.CommandText =
                 $"SELECT * FROM Records";
-
-            List<DrinkingWater> tableData = new();
 
             SqliteDataReader reader = tableCmd.ExecuteReader();
 
@@ -362,12 +409,5 @@ $"INSERT INTO Records(Date, Quantity, Habits_Id) VALUES('{date}', {quantity}, {h
 
         return finalInput;
     }
-}
-
-public class DrinkingWater
-{
-    public int Id { get; set; }
-    public DateTime Date { get; set; }
-    public int Quantity { get; set; }
 }
 
