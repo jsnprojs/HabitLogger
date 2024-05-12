@@ -188,22 +188,75 @@ class Program
         }
     }
 
-    private static void Insert()
+    private static void GetAllRecords()
     {
         Console.Clear();
-
-        string date = GetDateInput();
-
-        int quantity = GetNumberInput("\n\nPlease insert number of glasses or other measure of your choice (no decimals allowed)\n\n");
+        Console.WriteLine("Current Records");
 
         using (var connection = new SqliteConnection(connectionString))
         {
             connection.Open();
             var tableCmd = connection.CreateCommand();
             tableCmd.CommandText =
-               $"INSERT INTO drinking_water(date, quantity) VALUES('{date}', {quantity})";
+                $"SELECT * FROM Records";
+
+            List<DrinkingWater> tableData = new();
+
+            SqliteDataReader reader = tableCmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    Console.WriteLine($"Id - {reader.GetInt32(0)} | {reader.GetString(1)} | {reader.GetString(2)}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No rows found");
+            }
+
+            connection.Close();
+        }
+    }
+
+    private static void Insert()
+    {
+        Console.Clear();
+
+        using (var connection = new SqliteConnection(connectionString))
+        {
+
+            GetAllHabits();
+
+            connection.Open();
+            var tableCmd = connection.CreateCommand();
+
+            int habitId = GetNumberInput("Please enter the ID of the habit that you want to insert or enter 0 to go back to main menu");
+
+            tableCmd.CommandText = $"SELECT COUNT(*) FROM Habits WHERE Id = '{habitId}'";
+            int count = Convert.ToInt32(tableCmd.ExecuteScalar());
+            
+            while (count == 0)
+            {
+                Console.WriteLine("The Id/Habit does not exist in the current table");
+
+                habitId = GetNumberInput("Please enter the ID of the habit that you want to insert");
+
+                tableCmd.CommandText = $"SELECT COUNT(*) FROM Habits WHERE Id = '{habitId}'";
+                count = Convert.ToInt32(tableCmd.ExecuteScalar());
+
+            }
+
+            string date = GetDateInput();
+
+            int quantity = GetNumberInput("\n\nPlease insert number of choice (no decimals allowed)\n\n");
+
+            tableCmd.CommandText =
+$"INSERT INTO Records(Date, Quantity, Habits_Id) VALUES('{date}', {quantity}, {habitId})";
 
             tableCmd.ExecuteNonQuery();
+
 
             connection.Close();
         }
@@ -211,9 +264,8 @@ class Program
 
     private static void Delete()
     {
-        Console.Clear();
         //TO CHANGE
-        GetAllHabits();
+        GetAllRecords();
 
         var recordId = GetNumberInput("\n\nPlease type the Id of the record you want to delete or type 0 to go back to Main Menu\n\n");
 
@@ -222,7 +274,7 @@ class Program
             connection.Open();
             var tableCmd = connection.CreateCommand();
 
-            tableCmd.CommandText = $"DELETE from drinking_water WHERE Id = '{recordId}'";
+            tableCmd.CommandText = $"DELETE from Records WHERE Id = '{recordId}'";
 
             int rowCount = tableCmd.ExecuteNonQuery();
 

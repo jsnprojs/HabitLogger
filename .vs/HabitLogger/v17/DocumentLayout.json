@@ -14,11 +14,15 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:951334055:0:{bf84ea66-d821-4dba-b1b1-2777d8574775}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{fabf9319-47eb-497e-b8f6-d9f73fba5f55}"
             },
             {
               "$type": "Document",
@@ -26,9 +30,9 @@
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\jason\\Desktop\\VS\\HabitLogger\\HabitLogger\\Program.cs",
               "RelativeDocumentMoniker": "HabitLogger\\Program.cs",
-              "ToolTip": "C:\\Users\\jason\\Desktop\\VS\\HabitLogger\\HabitLogger\\Program.cs",
-              "RelativeToolTip": "HabitLogger\\Program.cs",
-              "ViewState": "AQIAAKkAAAAAAAAAAAAAAMEAAAAAAAAA",
+              "ToolTip": "C:\\Users\\jason\\Desktop\\VS\\HabitLogger\\HabitLogger\\Program.cs*",
+              "RelativeToolTip": "HabitLogger\\Program.cs*",
+              "ViewState": "AQIAAAUBAAAAAAAAAADwvwoBAAATAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-26T17:49:12.257Z",
               "EditorCaption": ""
