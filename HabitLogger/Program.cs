@@ -67,7 +67,7 @@ class Program
                     Environment.Exit(0);
                     break;
                 case "1":
-                    GetAllRecords();
+                    GetAllHabits();
                     break;
                 case "2":
                     Insert();
@@ -93,10 +93,13 @@ class Program
     {
         using (var connection = new SqliteConnection(connectionString))
         {
+            // Display Habits Table
+            GetAllHabits();
+
             connection.Open();
             var tableCmd = connection.CreateCommand();
 
-            string habit = GetHabitInput("Please type the habit you want to record or type 0 to go back to the Main Menu\n\n");
+            string habit = GetHabitInput("Please enter the habit you want to create or type 0 to go back to the Main Menu\n\n");
 
             tableCmd.CommandText = $"SELECT COUNT(*) FROM Habits WHERE LOWER(Type) = '{habit.ToLower()}'";
             int count = Convert.ToInt32(tableCmd.ExecuteScalar());
@@ -153,15 +156,17 @@ class Program
         return userInput;
     }
 
-    private static void GetAllRecords()
+    private static void GetAllHabits()
     {
         Console.Clear();
+        Console.WriteLine("Current Table");
+
         using (var connection = new SqliteConnection(connectionString))
         {
             connection.Open();
             var tableCmd = connection.CreateCommand();
             tableCmd.CommandText =
-                $"SELECT * FROM drinking_water ";
+                $"SELECT * FROM Habits";
 
             List<DrinkingWater> tableData = new();
 
@@ -171,13 +176,7 @@ class Program
             {
                 while (reader.Read())
                 {
-                    tableData.Add(
-                    new DrinkingWater
-                    {
-                        Id = reader.GetInt32(0),
-                        Date = DateTime.ParseExact(reader.GetString(1), "dd-MM-yy", new CultureInfo("en-US")),
-                        Quantity = reader.GetInt32(2)
-                    }); ;
+                    Console.WriteLine($"Id - {reader.GetInt32(0)} | {reader.GetString(1)} | {reader.GetString(2)}");
                 }
             }
             else
@@ -186,18 +185,13 @@ class Program
             }
 
             connection.Close();
-
-            Console.WriteLine("------------------------------------------\n");
-            foreach (var dw in tableData)
-            {
-                Console.WriteLine($"{dw.Id} - {dw.Date.ToString("dd-MMM-yyyy")} - Quantity: {dw.Quantity}");
-            }
-            Console.WriteLine("------------------------------------------\n");
         }
     }
 
     private static void Insert()
     {
+        Console.Clear();
+
         string date = GetDateInput();
 
         int quantity = GetNumberInput("\n\nPlease insert number of glasses or other measure of your choice (no decimals allowed)\n\n");
@@ -218,7 +212,8 @@ class Program
     private static void Delete()
     {
         Console.Clear();
-        GetAllRecords();
+        //TO CHANGE
+        GetAllHabits();
 
         var recordId = GetNumberInput("\n\nPlease type the Id of the record you want to delete or type 0 to go back to Main Menu\n\n");
 
@@ -246,7 +241,7 @@ class Program
 
     internal static void Update()
     {
-        GetAllRecords();
+        GetAllHabits();
 
         var recordId = GetNumberInput("\n\nPlease type Id of the record would like to update. Type 0 to return to main manu.\n\n");
 
